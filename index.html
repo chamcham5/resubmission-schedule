@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none';script-src 'self';style-src 'self';connect-src 'none';img-src data:;base-uri 'none';form-action 'none'">
+<title>再提出を含む提出日シナリオ比較</title>
+<meta name="description" content="必要日から製作・審査・修正の日数を逆算。再提出0・1・2回を比較する、ブラウザー内で動く無料の小さな計算ツールです。">
+<link rel="stylesheet" href="style.css"><script src="business.js" defer></script><script src="app.js" defer></script>
+</head>
+<body><main>
+<header><p class="eyebrow">ひと息事件室 / 業務ツール試用</p><span class="badge">無料・登録不要</span></header>
+<section class="intro"><h1>再提出があると、<br>いつまでに出す？</h1><p class="lead">必要日から製作・審査・修正を逆算し、<strong>再提出0・1・2回の提出日</strong>を並べて確認できます。</p><p>工程を1本ずつ見積もる担当者向けの限定試用版です。実案件での便益・有料需要は未検証です。</p><button type="button" id="example">合成例を入れて試す</button><a class="quiet" href="#how">入力する日数について</a></section>
+<aside class="privacy">入力はブラウザー内だけで処理します。外部送信・解析・入力の自動保存はありません。合成・匿名化データだけで試してください。氏名、顧客名、案件名、秘密情報は入力しないでください。</aside>
+<form id="calculator" novalidate>
+<div class="section-title"><h2>比較する条件</h2><span>空欄は「未確定」。0日と分けます。</span></div>
+<div class="fields">
+<label>必要日<input type="date" id="needed" required><small>この日を数えず、前日から逆算します。</small></label>
+<label>比較の基準日<input type="date" id="asof" required><small>提出日までの余裕を暦日で表示します。</small></label>
+<label>日数の数え方<select id="calendar"><option value="calendar_days">すべての暦日</option><option value="business_days">月〜金（除外日を別途指定）</option></select><small>国・地域の祝日は自動取得しません。</small></label>
+<label>審査担当が複数いる場合<select id="mode"><option value="parallel">並列：最も長い日数</option><option value="serial">直列：日数の合計</option></select><small>初回審査と再審査に同じ集約方式を使います。</small></label>
+<label>製作・準備の日数<input id="fabrication" inputmode="numeric" placeholder="例：10"><small>未知なら空欄。半日・時刻は扱いません。</small></label>
+<label>初回審査の日数<input id="initial" placeholder="例：5 または 5, 7"><small>担当者ごとにカンマで区切ります。審査なしは []。</small></label>
+<label>1回の修正に使う日数<input id="revision" inputmode="numeric" placeholder="例：3"><small>再提出0回の計算では使いません。</small></label>
+<label>1回の再審査の日数<input id="reviews" placeholder="例：5 または 5, 7"><small>担当者ごとにカンマで区切ります。審査なしは []。</small></label>
+</div>
+<label class="wide">除外日（任意）<textarea id="holidays" rows="2" placeholder="月〜金から除く日を YYYY-MM-DD で入力。改行またはカンマで区切ります。"></textarea><small>「月〜金」の場合だけ計算に影響します。</small></label>
+<p id="error" role="alert" hidden></p><div class="actions"><button id="run" type="submit">3つの提出日を比較する</button><button id="clear" type="button" class="secondary">入力と結果を消す</button></div>
+</form>
+<section id="result" aria-live="polite"><h2>比較結果</h2><p id="empty">条件を入れるか、合成例から始めてください。</p><div id="computed" hidden><p id="result-note"></p><div class="table-scroll" role="region" aria-label="再提出回数ごとの比較表" tabindex="0"><table><thead><tr><th>再提出</th><th>必要な日数</th><th>提出日</th><th>基準日からの余裕</th></tr></thead><tbody id="rows"></tbody></table></div><ul id="findings"></ul><details><summary>計算の内訳と入力条件</summary><pre id="details"></pre></details><p class="save-note">結果は下の欄で選択してコピーできます。ダウンロードや保存ダイアログは開きません。</p><label>コピー用の比較票<textarea id="report" readonly rows="8"></textarea></label></div></section>
+<section id="how"><h2>日数の置き方が、結果を決めます</h2><p>所要日数は「製作＋初回審査＋再提出回数×（修正＋再審査）」です。並列審査は最大値、直列審査は合計を使います。余裕は日数の数え方にかかわらず暦日です。</p><p>必要な期間が未確定なら、その案の提出日も未確定になります。再提出0回では修正・再審査の期間を使いません。回数は仮定したシナリオで、発生確率の予測ではありません。</p><p>法定期限・契約適合・納期の保証、工程全体の最適化、実システムへの接続や提出は行いません。既存の工程表や担当者による確認と併せて使ってください。</p></section>
+<section class="offer"><h2>複数案件の工程表に組み込みたい方へ</h2><p>この無料計算とは別に、<strong>複数案件をまとめた提出日一覧</strong>や、現在使っている列名に合わせたCSV出力など、有料の導入見積もりを希望するか確認しています。</p><p>追加作業の一例として、同じコアで計算した合成3案件の一覧です。実顧客のデータ・受注実績ではありません。</p><div class="table-scroll"><table><thead><tr><th>合成例</th><th>必要日</th><th>再提出</th><th>提出日</th></tr></thead><tbody><tr><th>A</th><td>2026-11-30</td><td>1回</td><td>2026-11-07</td></tr><tr><th>B</th><td>2026-12-15</td><td>1回</td><td>2026-11-17</td></tr><tr><th>C</th><td>2026-12-01</td><td>1回</td><td>製作日数が未確定</td></tr></tbody></table></div><details><summary>合成3案件のCSV見本（選択してコピー）</summary><label>コピー用のCSV見本<textarea id="sample-csv" readonly rows="6">合成例ID,必要日,再提出回数,所要暦日,提出日,基準日からの余裕暦日
+SYNTHETIC-A,2026-11-30,1,23,2026-11-07,6
+SYNTHETIC-B,2026-12-15,1,28,2026-11-17,16
+SYNTHETIC-C,2026-12-01,1,未確定,未確定,未確定</textarea></label></details><p>希望する入出力と件数を、配布ページのコメント欄へ公開して差し支えない範囲でお知らせください。秘密資料や連絡先の投稿は不要です。依頼・料金・納期・対応可否は個別確認後に決まり、このページで契約・決済は成立しません。</p><p class="small">コメント投稿にはitch.ioへのログインが必要です。相談の受領・回答は運営者が行います。ツールの試用と比較票の取得に登録は不要です。</p></section>
+<footer><p>提供：ひと息事件室。生成AIを制作補助に使用しています。計算例と画面の動作を検証した試用版で、第三者の推奨・導入実績・売上実績を示すものではありません。</p><p>受領済み日本語業務ツール B0241 の計算コアを再利用した試用版。Procore等の公式ツールではなく、連携もしません。</p><p><a href="https://support.procore.com/products/online/user-guide/project-level/submittals/best-practices-submittals" target="_blank" rel="noopener noreferrer">参考：Procoreの提出物管理・日程計算</a></p><p>版 2026-10-31 / 入力はページを閉じるか再読込すると消えます。</p></footer>
+</main></body></html>
